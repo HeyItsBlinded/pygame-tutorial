@@ -1,126 +1,94 @@
-#Imports
 import pygame, sys
-from pygame.locals import *
-import random, time
- 
-#Initialzing 
+
+# very important
 pygame.init()
- 
-#Setting up FPS 
-FPS = 60
-FramePerSec = pygame.time.Clock()
- 
-#Creating colors
-BLUE  = (0, 0, 255)
-RED   = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
- 
-#Other Variables for use in the program
-SCREEN_WIDTH = 400
-SCREEN_HEIGHT = 600
-SPEED = 5
-SCORE = 0
- 
-#Setting up Fonts
-font = pygame.font.SysFont("Verdana", 60)
-font_small = pygame.font.SysFont("Verdana", 20)
-game_over = font.render("Game Over", True, BLACK)
- 
-background = pygame.image.load("AnimatedStreet.png")
- 
-#Create a white screen 
-DISPLAYSURF = pygame.display.set_mode((400,600))
-DISPLAYSURF.fill(WHITE)
-pygame.display.set_caption("Game")
- 
-class Enemy(pygame.sprite.Sprite):
-      def __init__(self):
-        super().__init__() 
-        self.image = pygame.image.load("Enemy.png")
-        self.rect = self.image.get_rect()
-        self.rect.center = (random.randint(40, SCREEN_WIDTH-40), 0)  
- 
-      def move(self):
-        global SCORE
-        self.rect.move_ip(0,SPEED)
-        if (self.rect.top > 600):
-            SCORE += 1
-            self.rect.top = 0
-            self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
- 
- 
-class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__() 
-        self.image = pygame.image.load("Player.png")
-        self.rect = self.image.get_rect()
-        self.rect.center = (160, 520)
-        
-    def move(self):
-        pressed_keys = pygame.key.get_pressed()
-       #if pressed_keys[K_UP]:
-            #self.rect.move_ip(0, -5)
-       #if pressed_keys[K_DOWN]:
-            #self.rect.move_ip(0,5)
-         
-        if self.rect.left > 0:
-              if pressed_keys[K_LEFT]:
-                  self.rect.move_ip(-5, 0)
-        if self.rect.right < SCREEN_WIDTH:        
-              if pressed_keys[K_RIGHT]:
-                  self.rect.move_ip(5, 0)
-                   
-#Setting up Sprites        
-P1 = Player()
-E1 = Enemy()
- 
-#Creating Sprites Groups
-enemies = pygame.sprite.Group()
-enemies.add(E1)
-all_sprites = pygame.sprite.Group()
-all_sprites.add(P1)
-all_sprites.add(E1)
- 
-#Adding a new User event 
-INC_SPEED = pygame.USEREVENT + 1
-pygame.time.set_timer(INC_SPEED, 1000)
- 
-#Game Loop
+clock = pygame.time.Clock()
+
+# window set-up
+scr_width = 1280
+scr_height = 960
+screen = pygame.display.set_mode((scr_width, scr_height))   # display surface
+pygame.display.set_caption('PONG')
+
+# game assets - rects go around sprites, like a hitbox?
+ball = pygame.Rect(scr_width/2 - 15, scr_height/2 - 15, 30, 30)
+player1 = pygame.Rect(scr_width - 20, scr_height/2 - 70, 10, 140)
+player2 = pygame.Rect(10, scr_height/2 - 70, 10, 140)
+
+# creating color palette
+bg_color = pygame.Color('grey12')
+light_grey = (200, 200, 200)
+
+ballspeedX = 7
+ballspeedY = 7
+# ball physics and screen border collision
+def ball_animation():
+    global ballspeedX, ballspeedY
+    ball.x += ballspeedX
+    ball.y += ballspeedY
+    if ball.top <= 0 or ball.bottom >= scr_height:
+        ballspeedY *= -1
+    if ball.left <= 0 or ball.right >= scr_width:
+        ballspeedX *= -1
+    if ball.colliderect(player1) or ball.colliderect(player2):
+        ballspeedX *= -1
+
+player1Speed = 0
+def player1_animation():
+    player1.y += player1Speed
+    if player1.top <= 0:
+        player1.top = 0
+    if player1.bottom >= scr_height:
+        player1.bottom = scr_height
+
+player2Speed = 0
+def player2_animation():
+    player2.y += player2Speed
+    if player2.top <= 0:
+        player2.top = 0
+    if player2.bottom >= scr_height:
+        player2.bottom = scr_height
+
 while True:
-       
-    #Cycles through all events occurring  
+    # handles input
     for event in pygame.event.get():
-        if event.type == INC_SPEED:
-              SPEED += 0.5     
-        if event.type == QUIT:
+        if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
- 
-    DISPLAYSURF.blit(background, (0,0))
-    scores = font_small.render(str(SCORE), True, BLACK)
-    DISPLAYSURF.blit(scores, (10,10))
- 
-    #Moves and Re-draws all Sprites
-    for entity in all_sprites:
-        DISPLAYSURF.blit(entity.image, entity.rect)
-        entity.move()
- 
-    #To be run if collision occurs between Player and Enemy
-    if pygame.sprite.spritecollideany(P1, enemies):
-          pygame.mixer.Sound('crash.wav').play()
-          time.sleep(0.5)
-                    
-          DISPLAYSURF.fill(RED)
-          DISPLAYSURF.blit(game_over, (30,250))
-           
-          pygame.display.update()
-          for entity in all_sprites:
-                entity.kill() 
-          time.sleep(2)
-          pygame.quit()
-          sys.exit()        
-         
-    pygame.display.update()
-    FramePerSec.tick(FPS)
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_DOWN:
+                player1Speed += 7
+            if event.key == pygame.K_UP:
+                player1Speed -= 7
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_DOWN:
+                player1Speed -= 7
+            if event.key == pygame.K_UP:
+                player1Speed += 7
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_s:
+                player2Speed += 7
+            if event.key == pygame.K_w:
+                player2Speed -= 7
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_s:
+                player2Speed -= 7
+            if event.key == pygame.K_w:
+                player2Speed += 7
+    
+    ball_animation()
+    player1_animation()
+    player2_animation()
+
+    # sprites to show up on-screen
+    screen.fill(bg_color)
+    pygame.draw.rect(screen, light_grey, player1)
+    pygame.draw.rect(screen, light_grey, player2)
+    pygame.draw.ellipse(screen, light_grey, ball)
+    pygame.draw.aaline(screen, light_grey, (scr_width/2, 0), (scr_width/2, scr_height))
+
+    # updates game window
+    pygame.display.flip()
+    clock.tick(60)
