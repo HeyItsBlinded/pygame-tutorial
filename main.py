@@ -1,4 +1,5 @@
 import pygame, sys
+import random
 
 # very important
 pygame.init()
@@ -10,18 +11,21 @@ scr_height = 960
 screen = pygame.display.set_mode((scr_width, scr_height))   # display surface
 pygame.display.set_caption('PONG')
 
+# creating color palette
+bg_color = pygame.Color('grey12')
+light_grey = (200, 200, 200)
+
 # game assets - rects go around sprites, like a hitbox?
 ball = pygame.Rect(scr_width/2 - 15, scr_height/2 - 15, 30, 30)
 player1 = pygame.Rect(scr_width - 20, scr_height/2 - 70, 10, 140)
 player2 = pygame.Rect(10, scr_height/2 - 70, 10, 140)
 
-# creating color palette
-bg_color = pygame.Color('grey12')
-light_grey = (200, 200, 200)
+ballspeedX = 7 * random.choice((1,-1))
+ballspeedY = 7 * random.choice((1,-1))
+player1Speed = 0
+player2Speed = 0
 
-ballspeedX = 7
-ballspeedY = 7
-# ball physics and screen border collision
+# ------- DEFS -------
 def ball_animation():
     global ballspeedX, ballspeedY
     ball.x += ballspeedX
@@ -29,11 +33,16 @@ def ball_animation():
     if ball.top <= 0 or ball.bottom >= scr_height:
         ballspeedY *= -1
     if ball.left <= 0 or ball.right >= scr_width:
-        ballspeedX *= -1
+        ballresetpos()
     if ball.colliderect(player1) or ball.colliderect(player2):
         ballspeedX *= -1
 
-player1Speed = 0
+def ballresetpos():
+    global ballspeedX, ballspeedY
+    ball.center = (scr_width/2, scr_height/2)
+    ballspeedY = 0
+    ballspeedX = 0
+
 def player1_animation():
     player1.y += player1Speed
     if player1.top <= 0:
@@ -41,7 +50,6 @@ def player1_animation():
     if player1.bottom >= scr_height:
         player1.bottom = scr_height
 
-player2Speed = 0
 def player2_animation():
     player2.y += player2Speed
     if player2.top <= 0:
@@ -49,6 +57,7 @@ def player2_animation():
     if player2.bottom >= scr_height:
         player2.bottom = scr_height
 
+# ------- GAME LOOP -------
 while True:
     # handles input
     for event in pygame.event.get():
@@ -56,6 +65,13 @@ while True:
             pygame.quit()
             sys.exit()
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                ballresetpos()
+                ballspeedY = random.choice((1, -1)) * 7
+                ballspeedX = random.choice((1, -1)) * 7
+
+        # player1 ctrls
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
                 player1Speed += 7
@@ -67,6 +83,7 @@ while True:
             if event.key == pygame.K_UP:
                 player1Speed += 7
 
+        # player2 ctrls
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_s:
                 player2Speed += 7
@@ -82,7 +99,7 @@ while True:
     player1_animation()
     player2_animation()
 
-    # sprites to show up on-screen
+    # visuals !!
     screen.fill(bg_color)
     pygame.draw.rect(screen, light_grey, player1)
     pygame.draw.rect(screen, light_grey, player2)
