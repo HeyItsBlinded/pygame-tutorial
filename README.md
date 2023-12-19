@@ -5,3 +5,6 @@ derived from the 'Pong' project by Clear Code on Youtube. original source code f
 * 2-player support <br>
 * left player uses W/S, right player uses up arrow/down arrow <br>
 * after each round/when the ball is out of play, it resets in the middle and is triggered again by the space bar
+
+## edge cases to work on
+* the space bar can be used to reset the ball while it is still in play
