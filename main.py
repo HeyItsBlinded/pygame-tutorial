@@ -18,6 +18,8 @@ light_grey = (200, 200, 200)
 # score-keeping initializations
 player1_score = 0
 player2_score = 0
+player1_win = False
+player2_win = False
 game_font = pygame.font.Font("freesansbold.ttf", 32)
 
 # game assets - rects go around sprites, like a hitbox?
@@ -78,6 +80,15 @@ def player2_animation():
     if player2.bottom >= scr_height:
         player2.bottom = scr_height
 
+def win_condition():
+    global player1_win, player2_win, player1_score, player2_score
+    if player1_score == 5:
+        player1_win = True
+    if player2_score == 5:
+        player2_win = True
+    if player1_win or player2_win:
+        player1_score = player2_score = 0
+
 # ------- GAME LOOP -------
 while True:
     # handles input
@@ -89,8 +100,8 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 ballresetpos()
-                ballspeedY = random.choice((1, -1)) * 7
-                ballspeedX = random.choice((1, -1)) * 7
+                ballspeedY = random.choice((1, -1)) * 5
+                ballspeedX = random.choice((1, -1)) * 5
 
         # player1 ctrls
         if event.type == pygame.KEYDOWN:
@@ -119,6 +130,7 @@ while True:
     ball_animation()
     player1_animation()
     player2_animation()
+    win_condition()
 
     # visuals !!
     screen.fill(bg_color)
