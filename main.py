@@ -15,6 +15,11 @@ pygame.display.set_caption('PONG')
 bg_color = pygame.Color('grey12')
 light_grey = (200, 200, 200)
 
+# score-keeping initializations
+player1_score = 0
+player2_score = 0
+game_font = pygame.font.Font("freesansbold.ttf", 32)
+
 # game assets - rects go around sprites, like a hitbox?
 ball = pygame.Rect(scr_width/2 - 15, scr_height/2 - 15, 30, 30)
 player1 = pygame.Rect(scr_width - 20, scr_height/2 - 70, 10, 140)
@@ -27,12 +32,16 @@ player2Speed = 0
 
 # ------- DEFS -------
 def ball_animation():
-    global ballspeedX, ballspeedY
+    global ballspeedX, ballspeedY, player1_score, player2_score
     ball.x += ballspeedX
     ball.y += ballspeedY
     if ball.top <= 0 or ball.bottom >= scr_height:
         ballspeedY *= -1
-    if ball.left <= 0 or ball.right >= scr_width:
+    if ball.left <= 0:  # if player2 scores
+        player1_score += 1
+        ballresetpos()
+    if ball.right >= scr_width: # if player1 scores
+        player2_score += 1
         ballresetpos()
     if ball.colliderect(player1) or ball.colliderect(player2):
         ballspeedX *= -1
@@ -105,6 +114,12 @@ while True:
     pygame.draw.rect(screen, light_grey, player2)
     pygame.draw.ellipse(screen, light_grey, ball)
     pygame.draw.aaline(screen, light_grey, (scr_width/2, 0), (scr_width/2, scr_height))
+
+    # score visuals
+    player1_text = game_font.render(f"{player1_score}", False, light_grey)
+    screen.blit(player1_text, (660, 470))
+    player2_text = game_font.render(f"{player2_score}", False, light_grey)
+    screen.blit(player2_text, (600, 470))
 
     # updates game window
     pygame.display.flip()
