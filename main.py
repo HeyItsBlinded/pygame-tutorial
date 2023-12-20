@@ -32,6 +32,7 @@ ballspeedY = 7 * random.choice((1,-1))
 player1Speed = 0
 player2Speed = 0
 
+
 # ------- DEFS -------
 def ball_animation():
     global ballspeedX, ballspeedY, player1_score, player2_score
@@ -87,6 +88,7 @@ def win_condition():
     if player2_score == 5:
         player2_win = True
     if player1_win or player2_win:
+        player1_win = player2_win = False
         player1_score = player2_score = 0
 
 # ------- GAME LOOP -------
@@ -100,8 +102,8 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 ballresetpos()
-                ballspeedY = random.choice((1, -1)) * 5
-                ballspeedX = random.choice((1, -1)) * 5
+                ballspeedY = random.choice((1, -1)) * 7
+                ballspeedX = random.choice((1, -1)) * 7
 
         # player1 ctrls
         if event.type == pygame.KEYDOWN:
@@ -144,6 +146,10 @@ while True:
     screen.blit(player1_text, (660, 470))
     player2_text = game_font.render(f"{player2_score}", False, light_grey)
     screen.blit(player2_text, (600, 470))
+    
+    # TEMP # 
+    instructions = game_font.render('press [space] to serve after each point.', True, light_grey)
+    screen.blit(instructions, (scr_width/4, 10))
 
     # updates game window
     pygame.display.flip()
