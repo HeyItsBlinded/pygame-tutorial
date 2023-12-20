@@ -37,14 +37,26 @@ def ball_animation():
     ball.y += ballspeedY
     if ball.top <= 0 or ball.bottom >= scr_height:
         ballspeedY *= -1
-    if ball.left <= 0:  # if player2 scores
+    if ball.left <= 0:  # if player1 scores
         player1_score += 1
         ballresetpos()
-    if ball.right >= scr_width: # if player1 scores
+    if ball.right >= scr_width: # if player2 scores
         player2_score += 1
         ballresetpos()
-    if ball.colliderect(player1) or ball.colliderect(player2):
-        ballspeedX *= -1
+    if ball.colliderect(player1) and ballspeedX > 0:
+        if abs(ball.right - player1.left < 10):
+            ballspeedX *= -1
+        elif abs(ball.bottom - player1.top) < 10 and ballspeedY > 0:
+            ballspeedY *= -1
+        elif abs(ball.top - player1.bottom) < 10 and ballspeedY < 0:
+            ballspeedY *= -1
+    if ball.colliderect(player2) and ballspeedX < 0:
+        if abs(ball.left - player2.right < 10):
+            ballspeedX *= -1
+        elif abs(ball.bottom - player2.top) < 10 and ballspeedY > 0:
+            ballspeedY *= -1
+        elif abs(ball.top - player2.bottom) < 10 and ballspeedY < 0:
+            ballspeedY *= -1
 
 def ballresetpos():
     global ballspeedX, ballspeedY
