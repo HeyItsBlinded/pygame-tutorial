@@ -28,14 +28,16 @@ ball = pygame.Rect(scr_width/2 - 15, scr_height/2 - 15, 30, 30)
 player1 = pygame.Rect(scr_width - 20, scr_height/2 - 70, 10, 140)
 player2 = pygame.Rect(10, scr_height/2 - 70, 10, 140)
 
-ballspeedX = 7 * random.choice((1,-1))
-ballspeedY = 7 * random.choice((1,-1))
+ballspeedX = 0
+ballspeedY = 0 
 player1Speed = 0
 player2Speed = 0
 
 # sound assets
 pong_sound = pygame.mixer.Sound("pong.ogg")
 score_sound = pygame.mixer.Sound("score.ogg")
+
+show_instructions = True
 
 # ------- DEFS -------
 def ball_animation():
@@ -71,10 +73,11 @@ def ball_animation():
             ballspeedY *= -1
 
 def ballresetpos():
-    global ballspeedX, ballspeedY
+    global ballspeedX, ballspeedY, show_instructions
     ball.center = (scr_width/2, scr_height/2)
     ballspeedY = 0
     ballspeedX = 0
+    show_instructions = True
 
 def player1_animation():
     player1.y += player1Speed
@@ -102,6 +105,7 @@ def win_condition():
 
 # ------- GAME LOOP -------
 while True:
+
     # handles input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -114,30 +118,31 @@ while True:
                     ballresetpos()
                     ballspeedY = random.choice((1, -1)) * 7
                     ballspeedX = random.choice((1, -1)) * 7
+                    show_instructions = False
 
         # player1 ctrls
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
-                player1Speed += 7
+                player1Speed += 8
             if event.key == pygame.K_UP:
-                player1Speed -= 7
+                player1Speed -= 8
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_DOWN:
-                player1Speed -= 7
+                player1Speed -= 8
             if event.key == pygame.K_UP:
-                player1Speed += 7
+                player1Speed += 8
 
         # player2 ctrls
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_s:
-                player2Speed += 7
+                player2Speed += 8
             if event.key == pygame.K_w:
-                player2Speed -= 7
+                player2Speed -= 8
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_s:
-                player2Speed -= 7
+                player2Speed -= 8
             if event.key == pygame.K_w:
-                player2Speed += 7
+                player2Speed += 8
     
     ball_animation()
     player1_animation()
@@ -158,8 +163,9 @@ while True:
     screen.blit(player2_text, (600, 470))
     
     # TEMP # 
-    instructions = game_font.render('press [space] to serve after each point.', True, light_grey)
-    screen.blit(instructions, (scr_width/4, 10))
+    if show_instructions: 
+        instructions = game_font.render('press [space] to serve.', True, light_grey)
+        screen.blit(instructions, (460, 10))
 
     # updates game window
     pygame.display.flip()
