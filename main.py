@@ -110,9 +110,10 @@ while True:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                ballresetpos()
-                ballspeedY = random.choice((1, -1)) * 7
-                ballspeedX = random.choice((1, -1)) * 7
+                if ballspeedX == 0 and ballspeedY == 0: # prevents reset while ball is in play
+                    ballresetpos()
+                    ballspeedY = random.choice((1, -1)) * 7
+                    ballspeedX = random.choice((1, -1)) * 7
 
         # player1 ctrls
         if event.type == pygame.KEYDOWN:
