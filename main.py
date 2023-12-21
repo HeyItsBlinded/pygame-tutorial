@@ -32,6 +32,7 @@ ballspeedX = 0
 ballspeedY = 0 
 player1Speed = 0
 player2Speed = 0
+counter = 0 # helper var to increment increased ball speed
 
 # sound assets
 pong_sound = pygame.mixer.Sound("pong.ogg")
@@ -41,9 +42,10 @@ show_instructions = True
 
 # ------- DEFS -------
 def ball_animation():
-    global ballspeedX, ballspeedY, player1_score, player2_score
+    global ballspeedX, ballspeedY, player1_score, player2_score, counter
     ball.x += ballspeedX
     ball.y += ballspeedY
+    
     if ball.top <= 0 or ball.bottom >= scr_height:
         pygame.mixer.Sound.play(pong_sound)
         ballspeedY *= -1
@@ -56,6 +58,7 @@ def ball_animation():
         player2_score += 1
         ballresetpos()
     if ball.colliderect(player1) and ballspeedX > 0:
+        counter += 1
         pygame.mixer.Sound.play(pong_sound)
         if abs(ball.right - player1.left < 10):
             ballspeedX *= -1
@@ -64,6 +67,7 @@ def ball_animation():
         elif abs(ball.top - player1.bottom) < 10 and ballspeedY < 0:
             ballspeedY *= -1
     if ball.colliderect(player2) and ballspeedX < 0:
+        counter += 1
         pygame.mixer.Sound.play(pong_sound)
         if abs(ball.left - player2.right < 10):
             ballspeedX *= -1
@@ -73,10 +77,11 @@ def ball_animation():
             ballspeedY *= -1
 
 def ballresetpos():
-    global ballspeedX, ballspeedY, show_instructions
+    global ballspeedX, ballspeedY, show_instructions, counter
     ball.center = (scr_width/2, scr_height/2)
     ballspeedY = 0
     ballspeedX = 0
+    counter = 0
     show_instructions = True
 
 def player1_animation():
@@ -116,8 +121,8 @@ while True:
             if event.key == pygame.K_SPACE:
                 if ballspeedX == 0 and ballspeedY == 0: # prevents reset while ball is in play
                     ballresetpos()
-                    ballspeedY = random.choice((1, -1)) * 7
-                    ballspeedX = random.choice((1, -1)) * 7
+                    ballspeedY = random.choice((1, -1)) * 6
+                    ballspeedX = random.choice((1, -1)) * 6
                     show_instructions = False
 
         # player1 ctrls
@@ -162,10 +167,14 @@ while True:
     player2_text = game_font.render(f"{player2_score}", False, light_grey)
     screen.blit(player2_text, (600, 470))
     
-    # TEMP # 
+    # instructions support
     if show_instructions: 
         instructions = game_font.render('press [space] to serve.', True, light_grey)
         screen.blit(instructions, (460, 10))
+
+    # TEMP #
+    # counter_text = game_font.render(f"{counter}", False, light_grey)
+    # screen.blit(counter_text, (500, 500))
 
     # updates game window
     pygame.display.flip()
