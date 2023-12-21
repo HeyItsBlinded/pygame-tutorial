@@ -8,4 +8,9 @@ derived from the 'Pong' project by Clear Code on Youtube. original source code f
 * no countdown timer
 
 ## edge cases to work on
-* the space bar can be used to reset the ball while it is still in play
+* the space bar can be used to reset the ball while it is still in play (solved)
+
+## nice to haves
+* game finished/over screen once win condition is satisfied
+* instructions disappear once ball is in play
+* ball does not begin immediately once loaded in
