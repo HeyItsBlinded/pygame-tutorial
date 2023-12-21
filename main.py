@@ -145,8 +145,8 @@ while True:
 
     # visuals !!
     screen.fill(bg_color)
-    pygame.draw.rect(screen, light_grey, player1)
-    pygame.draw.rect(screen, light_grey, player2)
+    pygame.draw.rect(screen, 'brown2', player1)
+    pygame.draw.rect(screen, 'chartreuse4', player2)
     pygame.draw.ellipse(screen, light_grey, ball)
     pygame.draw.aaline(screen, light_grey, (scr_width/2, 0), (scr_width/2, scr_height))
 
