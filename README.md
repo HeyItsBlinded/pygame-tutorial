@@ -8,6 +8,7 @@ derived from the 'Pong' project by Clear Code on Youtube. original source code f
 * no countdown timer <br>
 * player colors different <br>
 * ball does not begin immediately once loaded in <br>
+* when a rally reaches a multiple of 5, the ballspeed increases 
 
 ## edge cases to work on
 * (SOLVED) the space bar can be used to reset the ball while still in play <br>
