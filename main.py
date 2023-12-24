@@ -75,6 +75,9 @@ def ball_animation():
             ballspeedY *= -1
         elif abs(ball.top - player2.bottom) < 10 and ballspeedY < 0:
             ballspeedY *= -1
+    if counter % 5 == 0 and counter != 0:
+        ballspeedX *= 1.0025
+        ballspeedY *= 1.0025
 
 def ballresetpos():
     global ballspeedX, ballspeedY, show_instructions, counter

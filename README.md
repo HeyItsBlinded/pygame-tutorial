@@ -12,7 +12,7 @@ derived from the 'Pong' project by Clear Code on Youtube. original source code f
 ## edge cases to work on
 * (SOLVED) the space bar can be used to reset the ball while still in play <br>
 * (SOLVED) instructions don't reappear after the first point is scored <br>
-* var 'counter' created and working. purpose: to increment speed each time rally += 5
+* (SOLVED) var 'counter' created and working. purpose: to increment speed each time rally += 5
 
 ## nice to haves
 * game finished/over screen once win condition is satisfied <br>
